@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Інтерактивна карта Google Maps</title>
+    <style>
+        #map {
+            height: 500px; 
+            width: 100%; 
+        }
+    </style>
+    <!-- Підключення Google Maps API -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAs-X7hY8MO63l1OoHgI8yJv73AJzpetnU&callback=initMap" async defer></script>
+</head>
+<body>
+    <h1>Інтерактивна карта Google Maps</h1>
+    <p>created by Bohdan Berdnikov</p>
+    <div id="map"></div> <!-- Контейнер для карти -->
+    
+    <script>
+        let markers = [];
+
+        function initMap() {
+            const map = new google.maps.Map(document.getElementById("map"), {
+                center: { lat: 50.4501, lng: 30.5234  },
+                zoom: 10
+            });
+
+            map.addListener("click", (event) => {
+                addMarker(event.latLng, map);
+            });
+
+            addMarker({ lat: 48.8566, lng: 2.3522 }, map);
+        }
+
+        function addMarker(location, map) {
+            const marker = new google.maps.Marker({
+                position: location,
+                map: map
+            });
+            markers.push(marker);
+
+            const infoWindow = new google.maps.InfoWindow({
+                content: `Lat: ${location.lat()}, Lng: ${location.lng()}`
+            });
+
+            marker.addListener("click", () => {
+                infoWindow.open(map, marker);
+            });
+
+            marker.addListener("dblclick", () => {
+                marker.setMap(null);
+                markers = markers.filter(m => m !== marker);
+            });
+        }
+    </script>
+</body>
+</html>
